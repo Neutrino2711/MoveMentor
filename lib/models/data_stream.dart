@@ -3,18 +3,34 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:status_code0/models/google_signin.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class DataStream extends StatelessWidget {
   DataStream({super.key});
 
   final _firestore = FirebaseFirestore.instance;
 
+  int curr_month = DateTime.now().month;
+
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<GoogleSignInProvider>(context);
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: StreamBuilder(
-          stream: _firestore.collection('features').snapshots(),
+          stream: _firestore
+              .collection('features')
+              .where('Id', isEqualTo: userProvider.user.email)
+              .where(
+                'Month',
+                isEqualTo: curr_month,
+              )
+              // .orderBy('Date')
+              // .orderBy('Date')
+              .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final data_value = snapshot.data!.docs;
@@ -23,7 +39,7 @@ class DataStream extends StatelessWidget {
               for (var data in data_value) {
                 final _weight = data.data();
                 weights.add((_weight['Weight']));
-                dates.add((_weight['Date']));
+                dates.add((DateFormat.yMMMd().format(_weight['Date'])));
               }
 
               // List<String> stringList = ['apple', 'banana', 'cherry'];
@@ -52,7 +68,7 @@ class DataStream extends StatelessWidget {
                         color: Theme.of(context).colorScheme.inversePrimary)
                   ]);
             } else {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(
                   backgroundColor: Colors.lightBlueAccent,
                 ),

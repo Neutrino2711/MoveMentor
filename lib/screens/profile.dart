@@ -5,27 +5,26 @@ import 'package:http/http.dart' as http;
 import 'package:status_code0/models/api_integrate.dart';
 import 'package:provider/provider.dart';
 import 'package:status_code0/models/google_signin.dart';
+import 'package:provider/provider.dart';
+import 'package:status_code0/models/user_data.dart';
+import 'package:intl/intl.dart';
 import 'dart:math';
+
+import 'package:status_code0/screens/signin_screen.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({
     super.key,
-    required this.sleep,
-    required this.steps,
-    required this.weight,
-    required this.height,
     required this.prompt,
   });
 
-  final String sleep, steps, height;
-  final int weight;
   final String prompt;
   @override
   State<UserProfile> createState() => _UserProfileState();
 }
 
 class _UserProfileState extends State<UserProfile> {
-  final String apiKey = "YOUR-API-KEY";
+  final String apiKey = "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";
   final String endpoint = 'https://api.openai.com/v1/chat/completions';
 
   String assistantReply = '';
@@ -59,16 +58,16 @@ class _UserProfileState extends State<UserProfile> {
     }
   }
 
-  double BMI(String height, int weight) {
+  double BMI(int height, int weight) {
     print(height);
     print(weight);
-    return (weight * 10000) /
-        ((int.tryParse(height)!) * (int.tryParse(height)!));
+    return (weight * 10000) / (height * height);
   }
 
   @override
   void initState() {
     // TODO: implement initState
+
     super.initState();
   }
 
@@ -76,6 +75,8 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserDataProvider>(context);
+
     final provider = Provider.of<GoogleSignInProvider>(context, listen: false);
     final user = provider.user;
 
@@ -90,21 +91,36 @@ class _UserProfileState extends State<UserProfile> {
           user.displayName!,
           style: Theme.of(context).textTheme.titleLarge,
         ),
-        Divider(
+        const Divider(
           thickness: 2.0,
         ),
         Text(
           "Male  21",
           style: Theme.of(context).textTheme.titleLarge,
         ),
-        Divider(
+        const Divider(
+          thickness: 2.0,
+        ),
+        TextButton(
+          child: Text(
+            "Calculate BMI",
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          onPressed: () {
+            String date = DateFormat.yMMMd().format(DateTime.now()).toString();
+            userProvider.fetchEntries(date, user.email);
+          },
+        ),
+        const Divider(
           thickness: 2.0,
         ),
         Text(
-          "Your BMI is ${BMI(widget.height, widget.weight).toString()}",
+          userProvider.Userentries.isNotEmpty
+              ? "Your BMI is ${BMI(userProvider.Userentries[0].height, userProvider.Userentries[0].weight).toString()}"
+              : "No Data",
           style: Theme.of(context).textTheme.titleLarge,
         ),
-        Divider(
+        const Divider(
           thickness: 2.0,
         ),
         TextButton(
@@ -120,6 +136,18 @@ class _UserProfileState extends State<UserProfile> {
             assistantReply,
             style: Theme.of(context).textTheme.titleLarge,
           ),
+        ),
+        TextButton(
+          child: Text(
+            "Logout",
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          onPressed: () async {
+            await provider.googleLogout();
+            Navigator.push(context, MaterialPageRoute(builder: ((context) {
+              return LoginPage();
+            })));
+          },
         ),
       ]),
     );

@@ -1,46 +1,46 @@
-import 'package:flutter/material.dart';
-import 'package:pedometer/pedometer.dart';
-import 'dart:async';
+// import 'package:flutter/material.dart';
+// import 'package:pedometer/pedometer.dart';
+// import 'dart:async';
 
-class PedoMeter {
-  late Stream<StepCount> _stepCountStream;
-  late Stream<PedestrianStatus> _pedestrianStatusStream;
-  String _status = '?', steps = '?';
-  Future<void> initPlatformState() async {
-    _pedestrianStatusStream = await Pedometer.pedestrianStatusStream;
-    _pedestrianStatusStream
-        .listen(onPedestrianStatusChanged)
-        .onError(onPedestrianStatusError);
+// class PedoMeter {
+//   late Stream<StepCount> _stepCountStream;
+//   late Stream<PedestrianStatus> _pedestrianStatusStream;
+//   String _status = '?', steps = '?';
+//   Future<void> initPlatformState() async {
+//     _pedestrianStatusStream = await Pedometer.pedestrianStatusStream;
+//     _pedestrianStatusStream
+//         .listen(onPedestrianStatusChanged)
+//         .onError(onPedestrianStatusError);
 
-    _stepCountStream = await Pedometer.stepCountStream;
-    _stepCountStream.listen(onStepCount).onError(onStepCountError);
+//     _stepCountStream = await Pedometer.stepCountStream;
+//     _stepCountStream.listen(onStepCount).onError(onStepCountError);
 
-    // if (!mounted) return;
-  }
+//     // if (!mounted) return;
+//   }
 
-  void onStepCount(StepCount event) {
-    print(event);
+//   void onStepCount(StepCount event) {
+//     print(event);
 
-    steps = event.steps.toString();
-  }
+//     steps = event.steps.toString();
+//   }c
 
-  void onPedestrianStatusChanged(PedestrianStatus event) {
-    print(event);
+//   void onPedestrianStatusChanged(PedestrianStatus event) {
+//     print(event);
 
-    _status = event.status;
-  }
+//     _status = event.status;
+//   }
 
-  void onPedestrianStatusError(error) {
-    print('onPedestrianStatusError: $error');
+//   void onPedestrianStatusError(error) {
+//     print('onPedestrianStatusError: $error');
 
-    _status = 'Pedestrian Status not available';
+//     _status = 'Pedestrian Status not available';
 
-    print(_status);
-  }
+//     print(_status);
+//   }
 
-  void onStepCountError(error) {
-    print('onStepCountError: $error');
+//   void onStepCountError(error) {
+//     print('onStepCountError: $error');
 
-    steps = 'Step Count not available';
-  }
-}
+//     steps = 'Step Count not available';
+//   }
+// }

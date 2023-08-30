@@ -7,14 +7,16 @@ import 'package:status_code0/screens/nav_controller_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:status_code0/screens/rewards.dart';
 import 'package:status_code0/screens/signin_screen.dart';
+import 'package:status_code0/models/user_data.dart';
 
 var kColorScheme =
-    ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 0, 0, 0));
+    ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 0, 0, 0));
 
 void main() async {
   WidgetsFlutterBinding();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(ChangeNotifierProvider(
+      create: (context) => UserDataProvider(), child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -33,16 +35,16 @@ class MyApp extends StatelessWidget {
             backgroundColor: kColorScheme.onBackground,
           ),
           textTheme: ThemeData().textTheme.copyWith(
-                titleLarge:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.w800
-                        // fontSize: 30.0,
-                        ),
-                bodyLarge: TextStyle(
+                titleLarge: const TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.w800
+                    // fontSize: 30.0,
+                    ),
+                bodyLarge: const TextStyle(
                   color: Colors.white,
                 ),
               ),
         ),
-        home: LoginPage(),
+        home: const LoginPage(),
         // home: HomePage(
         //   sleep_: "00",
         //   steps_: "00",

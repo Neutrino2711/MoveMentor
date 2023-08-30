@@ -8,9 +8,9 @@ class Meditation extends StatelessWidget {
   Meditation({super.key});
 
   List<DurationTab> duration = [
-    DurationTab(dur: 3),
-    DurationTab(dur: 5),
-    DurationTab(dur: 10),
+    const DurationTab(dur: 3),
+    const DurationTab(dur: 5),
+    const DurationTab(dur: 10),
   ];
 
   final assetsAudioPlayer = AssetsAudioPlayer();
@@ -28,7 +28,7 @@ class Meditation extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage('images/login1.jpg'),
               fit: BoxFit.fill,
@@ -56,12 +56,12 @@ class Meditation extends StatelessWidget {
                   Navigator.pop(context);
                   assetsAudioPlayer.stop();
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.arrow_back_ios_new_sharp,
                   color: Colors.white70,
                 ),
               ),
-              Center(
+              const Center(
                 child: Text("Meditation",
                     style: TextStyle(
                         fontSize: 45.0,
@@ -71,8 +71,8 @@ class Meditation extends StatelessWidget {
               // SizedBox(
               //   height: 250.0,
               // ),
-              Padding(
-                padding: const EdgeInsets.all(11.0),
+              const Padding(
+                padding: EdgeInsets.all(11.0),
                 child: Text("PICK A DURATION",
                     style: TextStyle(
                       color: Colors.white,
@@ -98,93 +98,100 @@ class Meditation extends StatelessWidget {
                           .colorScheme
                           .onPrimaryContainer
                           .withOpacity(0.5),
-                      // Theme.of(context).colorScheme.onPrimary,
-                      // Theme.of(context).colorScheme.primary,
-                      // Theme.of(context).colorScheme.onPrimaryContainer,
-                      // color.withOpacity(0.66),
-                      // color.withOpacity(0.55),
                     ],
                     // begin: Alignment.bottomRight,
                     // end: Alignment.topLeft,
                   ),
                   borderRadius: BorderRadius.circular(30.0),
                 ),
-                height: MediaQuery.sizeOf(context).height * 0.10,
+                height: MediaQuery.sizeOf(context).height * 0.20,
                 width: double.infinity,
-                child: Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    // scrollDirection: Axis.horizontal,
-                    children: duration,
-                  ),
+                child: Wrap(
+                  // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  // scrollDirection: Axis.horizontal,
+                  children: duration,
                 ),
               ),
               // SizedBox(
               //   height: 250.0,
               // ),
-              Center(
-                child: Container(
-                  // color: Colors.black38,
-                  height: 70.0,
-                  width: 200.0,
-                  padding: EdgeInsets.all(8.0),
-                  child: TextButton(
-                    onPressed: () {
-                      assetsAudioPlayer.play();
-                      showModalBottomSheet(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Container(
-                              height: MediaQuery.sizeOf(context).height * 1,
-                              // color: Colors.grey,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(colors: [
-                                  Colors.orangeAccent.shade100,
-                                  Colors.orangeAccent.shade200,
-                                  Colors.orangeAccent.shade400,
-                                  Colors.orangeAccent.withOpacity(0.5),
-                                ]),
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                              child: Countdown(
-                                seconds: timerdur * 60,
-                                build: (BuildContext context, double time) {
-                                  return Center(
-                                    child: Text(
-                                      time.toString() + ' sec left',
-                                      style: TextStyle(
-                                        fontSize: 40.0,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                interval: Duration(milliseconds: 100),
-                                onFinished: () {
-                                  Navigator.pop(context);
-                                  assetsAudioPlayer.stop();
-                                },
-                              ),
-                              // height: 200.0,
-                            );
-                          });
-                    },
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.white30),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0)))),
-                    child: Text(
-                      'Begin',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 25.0,
-                      ),
-                    ),
-                  ),
-                ),
-              )
+              MediPop(assetsAudioPlayer: assetsAudioPlayer)
             ],
           )),
+    );
+  }
+}
+
+class MediPop extends StatelessWidget {
+  const MediPop({
+    super.key,
+    required this.assetsAudioPlayer,
+  });
+
+  final AssetsAudioPlayer assetsAudioPlayer;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        // color: Colors.black38,
+        height: 70.0,
+        width: 200.0,
+        padding: EdgeInsets.all(8.0),
+        child: TextButton(
+          onPressed: () {
+            assetsAudioPlayer.play();
+            showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context) {
+                  return Container(
+                    height: MediaQuery.sizeOf(context).height * 1,
+                    // color: Colors.grey,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(colors: [
+                        Colors.orangeAccent.shade100,
+                        Colors.orangeAccent.shade200,
+                        Colors.orangeAccent.shade400,
+                        Colors.orangeAccent.withOpacity(0.5),
+                      ]),
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    child: Countdown(
+                      seconds: timerdur * 60,
+                      build: (BuildContext context, double time) {
+                        return Center(
+                          child: Text(
+                            '${time.toString()} sec left',
+                            style: const TextStyle(
+                              fontSize: 40.0,
+                            ),
+                          ),
+                        );
+                      },
+                      interval: const Duration(milliseconds: 100),
+                      onFinished: () {
+                        Navigator.pop(context);
+                        assetsAudioPlayer.stop();
+                      },
+                    ),
+                    // height: 200.0,
+                  );
+                });
+          },
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.white30),
+              shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0)))),
+          child: const Text(
+            'Begin',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 25.0,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -220,7 +227,7 @@ class _DurationTabState extends State<DurationTab> {
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0)))),
         child: Text(
-          widget.dur!.toString() + ' min',
+          '${widget.dur!.toString()} min',
           style: TextStyle(
             color: clicked ? Colors.black : Colors.white,
             fontSize: 25.0,

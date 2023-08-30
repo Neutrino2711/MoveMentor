@@ -33,7 +33,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  PedoMeter _pedoMeter = PedoMeter();
+  // PedoMeter _pedoMeter = PedoMeter();
 
   late Widget activePage;
   String response = '';
@@ -56,52 +56,54 @@ class _HomePageState extends State<HomePage> {
 
   int _selectedPageIndex = 0;
 
-  void _setPage(int index) async {
-    setState(() {
-      _selectedPageIndex = index;
-    });
-    //provider can be used
+  // void _setPage(int index) async {
+  //   setState(() {
+  //     _selectedPageIndex = index;
+  //   });
+  //   //provider can be used
 
-    if (index == 0) {
-      await _pedoMeter.initPlatformState();
+  //   if (index == 0) {
+  //     // await _pedoMeter.initPlatformState();
 
-      setState(() {
-        activePage = OverViewScreen(
-          steps: _pedoMeter.steps,
-          water: widget.water_,
-          sleep: widget.sleep_,
-          weight: widget.weight_,
-        );
-      });
-    } else if (index == 1) {
-      await getNewsData();
-      setState(() {
-        activePage = NewsPage(healthdata: healthdata!);
-      });
-    } else if (index == 2) {
-      setState(() {
-        activePage = AddDatapage();
-      });
-    } else if (index == 3) {
-      setState(() {
-        activePage = Meditation();
-      });
-    } else if (index == 4) {
-      setState(() {
-        activePage = UserProfile(
-          steps: widget.steps_,
-          sleep: widget.sleep_,
-          weight: widget.weight_,
-          prompt: response,
-          height: "70",
-        );
-      });
-    } else if (index == 5) {
-      activePage = RewardPage();
-    }
-  }
+  //     setState(() {
+  //       activePage = OverViewScreen(
+  //         // steps: _pedoMeter.steps,
+  //         steps: "0",
+  //         water: widget.water_,
+  //         sleep: widget.sleep_,
+  //         weight: widget.weight_,
+  //       );
+  //     });
+  //   } else if (index == 1) {
+  //     await getNewsData();
+  //     setState(() {
+  //       activePage = NewsPage(healthdata: healthdata!);
+  //     });
+  //   } else if (index == 2) {
+  //     setState(() {
+  //       activePage = AddDatapage();
+  //     });
+  //   } else if (index == 3) {
+  //     setState(() {
+  //       activePage = Meditation();
+  //     });
+  //   } else if (index == 4) {
+  //     setState(() {
+  //       activePage = UserProfile(
+  //         steps: widget.steps_,
+  //         sleep: widget.sleep_,
+  //         weight: widget.weight_,
+  //         prompt: response,
+  //         height: "70",
+  //       );
+  //     });
+  //   } else if (index == 5) {
+  //     activePage = RewardPage();
+  //   }
+  // }
 
   NetworkHelper networkHelper = NetworkHelper();
+  int real_index = 0;
 
   Map<String, dynamic>? healthdata;
 
@@ -112,19 +114,19 @@ class _HomePageState extends State<HomePage> {
     return newsdata;
   }
 
-  void _naviagate(int index) async {
-    if (index == 1) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (ctx) => NewsPage(
-                    healthdata: healthdata!,
-                  )));
-    } else if (index == 3) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (ctx) => Meditation()));
-    }
-  }
+  // void _naviagate(int index) async {
+  //   if (index == 1) {
+  //     Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //             builder: (ctx) => NewsPage(
+  //                   healthdata: healthdata!,
+  //                 )));
+  //   } else if (index == 3) {
+  //     Navigator.push(
+  //         context, MaterialPageRoute(builder: (ctx) => Meditation()));
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -133,67 +135,49 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
         currentIndex: _selectedPageIndex,
         onTap: (index) {
-          _setPage(index);
+          setState(() {
+            real_index = index;
+          });
           // _naviagate(index);
         },
         items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.analytics,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            label: "Analysis",
-            backgroundColor: Theme.of(context).colorScheme.onBackground,
+          DesignedBottomNav(context, Icons.analytics, "Analysis"),
+          DesignedBottomNav(context, Icons.newspaper, "Journal"),
+          DesignedBottomNav(context, Icons.add_circle, "Add"),
+          DesignedBottomNav(context, Icons.self_improvement, "Meditation"),
+          DesignedBottomNav(context, Icons.person, "Profile"),
+          DesignedBottomNav(context, Icons.star, "Reward"),
+        ],
+      ),
+      body: IndexedStack(
+        index: real_index,
+        children: [
+          const OverViewScreen(
+            steps: '0',
+            water: '0',
+            sleep: '0',
+            weight: 0,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.newspaper,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            label: "Journal",
-            backgroundColor: Theme.of(context).colorScheme.onBackground,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.add_circle,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            label: "Add",
-            backgroundColor: Theme.of(context).colorScheme.onBackground,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.self_improvement,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            label: "Meditation",
-            backgroundColor: Theme.of(context).colorScheme.onBackground,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.person,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            label: "Profile",
-            backgroundColor: Theme.of(context).colorScheme.onBackground,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.star,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            label: "Reward",
-            backgroundColor: Theme.of(context).colorScheme.onBackground,
+          AddDatapage(),
+          Meditation(),
+          const UserProfile(
+            prompt: "",
           ),
         ],
       ),
-      body: activePage,
+    );
+  }
+
+  BottomNavigationBarItem DesignedBottomNav(
+      BuildContext context, IconData icon, String label) {
+    return BottomNavigationBarItem(
+      icon: Icon(
+        icon,
+        color: Colors.white,
+        size: 30.0,
+      ),
+      label: label,
+      backgroundColor: Theme.of(context).colorScheme.onBackground,
     );
   }
 }

@@ -9,6 +9,9 @@ import 'package:status_code0/screens/nav_controller_page.dart';
 import 'package:pedometer/pedometer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:intl/intl.dart';
+import 'package:status_code0/models/user_data.dart';
+import 'package:provider/provider.dart';
+import 'package:status_code0/models/google_signin.dart';
 
 final _firestore = FirebaseFirestore.instance;
 
@@ -25,50 +28,50 @@ class AddDatapage extends StatefulWidget {
 
 class _AddDatapageState extends State<AddDatapage> {
   DateTime? _selectedDate;
-  final _formatter = DateFormat.yMd();
+  final _formatter = DateFormat.yMMMd();
   // ApiIntegrate _apiIntegrate = ApiIntegrate();
 
-  late Stream<StepCount> _stepCountStream;
-  late Stream<PedestrianStatus> _pedestrianStatusStream;
+  // late Stream<StepCount> _stepCountStream;
+  // late Stream<PedestrianStatus> _pedestrianStatusStream;
   String _status = '?', steps = '?';
-  Future<void> initPlatformState() async {
-    _pedestrianStatusStream = await Pedometer.pedestrianStatusStream;
-    _pedestrianStatusStream
-        .listen(onPedestrianStatusChanged)
-        .onError(onPedestrianStatusError);
+  // Future<void> initPlatformState() async {
+  //   _pedestrianStatusStream = await Pedometer.pedestrianStatusStream;
+  //   _pedestrianStatusStream
+  //       .listen(onPedestrianStatusChanged)
+  //       .onError(onPedestrianStatusError);
 
-    _stepCountStream = await Pedometer.stepCountStream;
-    _stepCountStream.listen(onStepCount).onError(onStepCountError);
+  //   _stepCountStream = await Pedometer.stepCountStream;
+  //   _stepCountStream.listen(onStepCount).onError(onStepCountError);
 
-    // if (!mounted) return;
-  }
+  //   // if (!mounted) return;
+  // }
 
-  void onStepCount(StepCount event) {
-    print(event);
+  // void onStepCount(StepCount event) {
+  //   print(event);
 
-    steps = event.steps.toString();
-    print(steps);
-  }
+  //   steps = event.steps.toString();
+  //   print(steps);
+  // }
 
-  void onPedestrianStatusChanged(PedestrianStatus event) {
-    print(event);
+  // void onPedestrianStatusChanged(PedestrianStatus event) {
+  //   print(event);
 
-    _status = event.status;
-  }
+  //   _status = event.status;
+  // }
 
-  void onPedestrianStatusError(error) {
-    print('onPedestrianStatusError: $error');
+  // void onPedestrianStatusError(error) {
+  //   print('onPedestrianStatusError: $error');
 
-    _status = 'Pedestrian Status not available';
+  //   _status = 'Pedestrian Status not available';
 
-    print(_status);
-  }
+  //   print(_status);
+  // }
 
-  void onStepCountError(error) {
-    print('onStepCountError: $error');
+  // void onStepCountError(error) {
+  //   print('onStepCountError: $error');
 
-    steps = 'Step Count not available';
-  }
+  //   steps = 'Step Count not available';
+  // }
 
   void presentDatePicker() async {
     final now = DateTime.now();
@@ -84,23 +87,42 @@ class _AddDatapageState extends State<AddDatapage> {
       _selectedDate = pickedDate;
     });
   }
+
   // void getMessages()async
   // {
   //   await for (var in _firestore.collection('features').)
   // }
+  TextEditingController _sleep_controller = TextEditingController();
+  TextEditingController _height_controller = TextEditingController();
+  TextEditingController _weight_controller = TextEditingController();
+  TextEditingController _water_controller = TextEditingController();
+  TextEditingController _gender_controller = TextEditingController();
+  TextEditingController _age_controller = TextEditingController();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _age_controller.dispose();
+    _gender_controller.dispose();
+    _height_controller.dispose();
+    _water_controller.dispose();
+    _sleep_controller.dispose();
+    _weight_controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    initPlatformState();
-    TextEditingController _sleep_controller = TextEditingController();
-    TextEditingController _height_controller = TextEditingController();
-    TextEditingController _weight_controller = TextEditingController();
-    TextEditingController _water_controller = TextEditingController();
-    TextEditingController _gender_controller = TextEditingController();
+    final entriesProvider = Provider.of<UserDataProvider>(context);
+    final userProvider =
+        Provider.of<GoogleSignInProvider>(context, listen: false);
+
+    final user = userProvider.user;
+    // initPlatformState();
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             'Details',
           ),
           backgroundColor: Theme.of(context).colorScheme.onInverseSurface,
@@ -143,161 +165,50 @@ class _AddDatapageState extends State<AddDatapage> {
                     ],
                   ),
                 ),
-                CustomInputField(
-                  water_controller: _water_controller,
-                  label: "Water",
-                  isWater: true,
+                InputTile(
+                    leading: "Water",
+                    trailing: "Glass",
+                    controller: _water_controller),
+                InputTile(
+                  controller: _sleep_controller,
+                  leading: "Sleep",
+                  trailing: "hrs",
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Sleep",
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge!
-                            .copyWith(fontSize: 20.0),
-                      ),
-                      Spacer(),
-                      Expanded(
-                        child: TextField(
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                          controller: _sleep_controller,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black),
-                                  borderRadius: BorderRadius.circular(30.0))),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("hrs"),
-                      ),
-                    ],
-                  ),
+                InputTile(
+                  controller: _height_controller,
+                  leading: "Height",
+                  trailing: "cm",
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Height",
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge!
-                            .copyWith(fontSize: 20.0),
-                      ),
-                      Spacer(),
-                      Expanded(
-                        child: TextField(
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                          controller: _height_controller,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black),
-                                  borderRadius: BorderRadius.circular(30.0))),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("cm"),
-                      ),
-                    ],
-                  ),
+                InputTile(
+                  controller: _weight_controller,
+                  leading: "Weight",
+                  trailing: "kg",
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Weight",
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge!
-                            .copyWith(fontSize: 20.0),
-                      ),
-                      Spacer(),
-                      Expanded(
-                        child: TextField(
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                          controller: _weight_controller,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black),
-                                  borderRadius: BorderRadius.circular(30.0))),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("kg"),
-                      ),
-                    ],
-                  ),
+                InputTile(
+                  controller: _age_controller,
+                  leading: "Age",
+                  trailing: "Yrs",
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Text(
-                            "Gender",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge!
-                                .copyWith(fontSize: 20.0),
-                          ),
-                          Spacer(),
-                          Expanded(
-                            child: TextField(
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                              controller: _gender_controller,
-                              decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.black),
-                                      borderRadius:
-                                          BorderRadius.circular(30.0))),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text('''M/F'''),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Text(steps),
-                    // StreamBuilder<String>(
-                    //   stream: _controller.stream,
-                    //   builder: ())
-                  ]),
-                ),
+                InputTile(
+                    leading: "Gender",
+                    trailing: "M/F",
+                    controller: _gender_controller),
                 TextButton(
                   onPressed: () {
-                    _firestore.collection('features').add({
-                      'Height': _height_controller.text,
-                      'Sleep': _sleep_controller.text,
-                      'Steps': steps,
-                      'Water': _water_controller.text,
-                      'Weight': int.parse(_weight_controller.text),
-                      'Date': _formatter.format(_selectedDate!)
-                    });
-                    print(steps);
-                    print(_water_controller.text);
-                    print(_sleep_controller.text);
-                    print(_weight_controller.text);
-                    print(_height_controller.text);
-                    print(_formatter.format(_selectedDate!));
+                    entriesProvider.addUserEntries(
+                      _gender_controller.text,
+                      int.tryParse(_weight_controller.text)!,
+                      int.tryParse(_age_controller.text)!,
+                      int.tryParse(_water_controller.text)!,
+                      int.tryParse(_sleep_controller.text)!,
+                      int.tryParse(_height_controller.text)!,
+                      _selectedDate!,
+                      // DateFormat.yMMMd().format(date),
+                      DateTime.now().month,
+                      //
+                      user.email.toString(),
+                    );
+
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -314,5 +225,52 @@ class _AddDatapageState extends State<AddDatapage> {
                 ),
               ]),
         ));
+  }
+}
+
+class InputTile extends StatelessWidget {
+  const InputTile({
+    super.key,
+    required this.leading,
+    required this.trailing,
+    required TextEditingController controller,
+  }) : _sleep_controller = controller;
+
+  final TextEditingController _sleep_controller;
+  final String leading, trailing;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Text(
+            leading,
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge!
+                .copyWith(fontSize: 20.0),
+          ),
+          Spacer(),
+          Expanded(
+            child: TextField(
+              style: const TextStyle(
+                color: Colors.black,
+              ),
+              controller: _sleep_controller,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                      borderRadius: BorderRadius.circular(30.0))),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(trailing),
+          ),
+        ],
+      ),
+    );
   }
 }
