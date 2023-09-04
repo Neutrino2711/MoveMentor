@@ -107,34 +107,43 @@ class _OverViewScreenState extends State<OverViewScreen> {
           // Text("Current Date"),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Text(
-                  "Date",
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge!
-                      .copyWith(fontSize: 20.0),
-                ),
-                const Spacer(),
-                Text(
-                  DateFormat.yMMMd().format(_selectedDate).toString(),
-                ),
-                const Spacer(),
-                IconButton(
-                  onPressed: () async {
-                    await presentDatePicker();
-                    await entriesProvider.fetchEntries(
-                        date_!, userProvider.user.email);
-                    print("enter");
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.0),
+                color: Theme.of(context).colorScheme.inversePrimary,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(
+                    "Date",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(fontSize: 20.0),
+                  ),
+                  Text(
+                    DateFormat.yMMMd().format(_selectedDate).toString(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(fontSize: 20.0),
+                  ),
+                  IconButton(
+                    onPressed: () async {
+                      await presentDatePicker();
+                      await entriesProvider.fetchEntries(
+                          date_!, userProvider.user.email);
+                      print("enter");
 
-                    print(entriesProvider.Userentries.length);
-                    print("leave");
-                  },
-                  icon: const Icon(Icons.calendar_month),
-                  iconSize: 45.0,
-                )
-              ],
+                      print(entriesProvider.Userentries.length);
+                      print("leave");
+                    },
+                    icon: const Icon(Icons.calendar_month),
+                    iconSize: 45.0,
+                  )
+                ],
+              ),
             ),
           ),
           Expanded(
@@ -147,39 +156,55 @@ class _OverViewScreenState extends State<OverViewScreen> {
               ),
               children: [
                 CustomBlocks(
+                  isStep: false,
+                  isSleep: false,
+                  isWater: false,
+                  isWeight: true,
                   title: "Weight",
                   icon: Icons.monitor_weight,
                   imageUrl: "url",
                   value: isUserEntriesEmpty
-                      ? "0"
-                      : "${entriesProvider.Userentries[0].weight} KG",
+                      ? 0
+                      : entriesProvider.Userentries[0].weight,
                   color: Theme.of(context).colorScheme.primaryContainer,
                 ),
                 CustomBlocks(
+                  isStep: false,
+                  isSleep: true,
+                  isWater: false,
+                  isWeight: false,
                   title: "Sleep",
                   icon: Icons.bedtime,
                   imageUrl: "url",
                   value: isUserEntriesEmpty
-                      ? "0"
-                      : "${entriesProvider.Userentries[0].sleep} HRS",
+                      ? 0
+                      : entriesProvider.Userentries[0].sleep,
                   // color: Colors.yellow,
                   color: Theme.of(context).colorScheme.primaryContainer,
                 ),
                 CustomBlocks(
+                  isStep: false,
+                  isSleep: false,
+                  isWater: true,
+                  isWeight: false,
                   title: "Water",
                   icon: Icons.water_drop,
                   imageUrl: "",
                   value: isUserEntriesEmpty
-                      ? "0"
-                      : "${entriesProvider.Userentries[0].water} GLASS",
+                      ? 0
+                      : entriesProvider.Userentries[0].water,
                   // color: Colors.green,
                   color: Theme.of(context).colorScheme.primaryContainer,
                 ),
                 CustomBlocks(
+                  isStep: true,
+                  isSleep: false,
+                  isWater: false,
+                  isWeight: false,
                   title: "Walk",
                   icon: Icons.directions_walk,
                   imageUrl: "",
-                  value: "${widget.steps} STEPS",
+                  value: 0,
                   // color: Colors.pink,
                   color: Theme.of(context).colorScheme.primaryContainer,
                 ),

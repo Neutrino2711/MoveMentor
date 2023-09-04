@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 
 class User {
-  String gender, id;
+  String gender, id, curr_date;
   int weight, age, water, sleep, height, month;
   DateTime date;
 
@@ -15,5 +15,6 @@ class User {
     required this.water,
     required this.date,
     required this.month,
+    required this.curr_date,
   });
 }

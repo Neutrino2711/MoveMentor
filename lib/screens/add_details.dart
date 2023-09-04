@@ -118,6 +118,8 @@ class _AddDatapageState extends State<AddDatapage> {
         Provider.of<GoogleSignInProvider>(context, listen: false);
 
     final user = userProvider.user;
+    // Timestamp? dateTimestamp = _selectedDate as Timestamp;
+    // print(dateTimestamp);
     // initPlatformState();
 
     return Scaffold(
@@ -203,20 +205,13 @@ class _AddDatapageState extends State<AddDatapage> {
                       int.tryParse(_sleep_controller.text)!,
                       int.tryParse(_height_controller.text)!,
                       _selectedDate!,
-                      // DateFormat.yMMMd().format(date),
                       DateTime.now().month,
-                      //
                       user.email.toString(),
+                      DateFormat.yMMMd().format(_selectedDate!),
                     );
 
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: ((context) => HomePage(
-                                steps_: steps,
-                                sleep_: _sleep_controller.text,
-                                water_: _water_controller.text,
-                                weight_: int.parse(_weight_controller.text)))));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: ((context) => HomePage())));
                   },
                   child: Text(
                     "Submit",
@@ -252,7 +247,7 @@ class InputTile extends StatelessWidget {
                 .titleLarge!
                 .copyWith(fontSize: 20.0),
           ),
-          Spacer(),
+          const Spacer(),
           Expanded(
             child: TextField(
               style: const TextStyle(

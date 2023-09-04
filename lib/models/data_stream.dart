@@ -23,11 +23,16 @@ class DataStream extends StatelessWidget {
       child: StreamBuilder(
           stream: _firestore
               .collection('features')
+              .orderBy(
+                'Date',
+                descending: false,
+              )
               .where('Id', isEqualTo: userProvider.user.email)
               .where(
                 'Month',
                 isEqualTo: curr_month,
               )
+
               // .orderBy('Date')
               // .orderBy('Date')
               .snapshots(),
@@ -39,7 +44,12 @@ class DataStream extends StatelessWidget {
               for (var data in data_value) {
                 final _weight = data.data();
                 weights.add((_weight['Weight']));
-                dates.add((DateFormat.yMMMd().format(_weight['Date'])));
+                Timestamp timestamp = _weight['Date'];
+                DateTime dateTime = timestamp.toDate();
+                dates.add(DateFormat.yMMMd().format(dateTime));
+                // dates.add(DateTime.parse(DateFormat.yMMMd()
+                // .format(DateTime.parse(_weight['Date']))));
+                // dates.add((_weight['Date']).toDate);
               }
 
               // List<String> stringList = ['apple', 'banana', 'cherry'];
@@ -61,13 +71,18 @@ class DataStream extends StatelessWidget {
                       NumericAxis(minimum: 1, maximum: 110, interval: 1),
                   series: <ChartSeries<_ChartData, String>>[
                     ColumnSeries<_ChartData, String>(
-                        dataSource: twoDList,
-                        xValueMapper: (_ChartData twoDList, _) => twoDList.x,
-                        yValueMapper: (_ChartData twoDList, _) => twoDList.y,
-                        name: 'Gold',
-                        color: Theme.of(context).colorScheme.inversePrimary)
+                      dataSource: twoDList,
+                      xValueMapper: (_ChartData twoDList, _) =>
+                          twoDList.x.toString(),
+                      yValueMapper: (_ChartData twoDList, _) {
+                        return twoDList.y;
+                      },
+                      name: 'Gold',
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                    )
                   ]);
             } else {
+              print(snapshot.error);
               return const Center(
                 child: CircularProgressIndicator(
                   backgroundColor: Colors.lightBlueAccent,

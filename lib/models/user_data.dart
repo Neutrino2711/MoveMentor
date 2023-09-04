@@ -21,6 +21,7 @@ class UserDataProvider extends ChangeNotifier {
     DateTime date,
     int month,
     String id,
+    String curr_date,
   ) async {
     // _firestore.collection('features').add();
     final newEntry = User(
@@ -33,6 +34,7 @@ class UserDataProvider extends ChangeNotifier {
       water: water,
       date: date,
       month: month,
+      curr_date: curr_date,
     );
 
     await _firestore.collection('features').add({
@@ -44,7 +46,8 @@ class UserDataProvider extends ChangeNotifier {
       'Date': newEntry.date,
       'Age': newEntry.age,
       'Gender': newEntry.gender,
-      'Month': newEntry.month
+      'Month': newEntry.month,
+      'C_Date': newEntry.curr_date,
     });
 
     user.add(newEntry);
@@ -53,10 +56,13 @@ class UserDataProvider extends ChangeNotifier {
 
   Future<void> fetchEntries(String dateTime, String email) async {
     try {
+      Timestamp firestoretimestamp;
+      DateTime datetime;
+      print(dateTime);
       final QuerySnapshot snapshot = await _firestore
           .collection('features')
           .where(
-            'Date',
+            'C_Date',
             isEqualTo: dateTime,
           )
           .where(
@@ -65,21 +71,22 @@ class UserDataProvider extends ChangeNotifier {
           )
           .get();
       // print(snapshot.size);
-      user = snapshot.docs
-          .map(
-            (doc) => User(
-              id: doc['Id'],
-              age: doc['Age'],
-              sleep: doc['Sleep'],
-              water: doc['Water'],
-              height: doc['Height'],
-              weight: doc['Weight'],
-              gender: doc['Gender'],
-              date: doc['Date'],
-              month: doc['Month'],
-            ),
-          )
-          .toList();
+      user = snapshot.docs.map((doc) {
+        firestoretimestamp = doc['Date'];
+        datetime = firestoretimestamp.toDate();
+        return User(
+          id: doc['Id'],
+          age: doc['Age'],
+          sleep: doc['Sleep'],
+          water: doc['Water'],
+          height: doc['Height'],
+          weight: doc['Weight'],
+          gender: doc['Gender'],
+          date: datetime,
+          month: doc['Month'],
+          curr_date: doc['C_Date'],
+        );
+      }).toList();
       print("inside fetch");
       // print(user.length);
 

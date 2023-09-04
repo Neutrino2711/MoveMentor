@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:status_code0/screens/rewards.dart';
 import 'package:status_code0/screens/signin_screen.dart';
 import 'package:status_code0/models/user_data.dart';
+import 'package:status_code0/screens/init_screen.dart';
 
 var kColorScheme =
     ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 0, 0, 0));
@@ -25,32 +26,34 @@ class MyApp extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => ChangeNotifierProvider(
-      create: (context) => GoogleSignInProvider(),
-      child: MaterialApp(
-        theme: ThemeData.light().copyWith(
-          useMaterial3: true,
-          colorScheme: kColorScheme,
-          appBarTheme: AppBarTheme().copyWith(
-            backgroundColor: kColorScheme.onBackground,
-          ),
-          textTheme: ThemeData().textTheme.copyWith(
-                titleLarge: const TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.w800
-                    // fontSize: 30.0,
-                    ),
-                bodyLarge: const TextStyle(
-                  color: Colors.white,
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+        create: (context) => GoogleSignInProvider(),
+        child: MaterialApp(
+          theme: ThemeData.light().copyWith(
+            useMaterial3: true,
+            colorScheme: kColorScheme,
+            appBarTheme: const AppBarTheme().copyWith(
+              backgroundColor: kColorScheme.onBackground,
+            ),
+            textTheme: ThemeData().textTheme.copyWith(
+                  titleLarge: const TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.w800
+                      // fontSize: 30.0,
+                      ),
+                  bodyLarge: const TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-        ),
-        home: const LoginPage(),
-        // home: HomePage(
-        //   sleep_: "00",
-        //   steps_: "00",
-        //   water_: "00",
-        //   weight_: 00,
-        // ),
-        // themeMode: ThemeMode.dark,
-      ));
+          ),
+          home: LoginPage(),
+          // home: HomePage(
+          //   sleep_: "00",
+          //   steps_: "00",
+          //   water_: "00",
+          //   weight_: 00,
+          // ),
+          // themeMode: ThemeMode.dark,
+        ));
+  }
 }

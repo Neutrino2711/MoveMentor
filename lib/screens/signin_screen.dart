@@ -10,10 +10,12 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final userCheckProvider = Provider.of<GoogleSignInProvider>(context);
+
     return Scaffold(
       // appBar: AppBar(),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('images/login.png'),
             fit: BoxFit.fill,
@@ -35,14 +37,8 @@ class LoginPage extends StatelessWidget {
                   final user = FirebaseAuth.instance.currentUser;
                   debugPrint(user!.email);
                   if (user != null) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: ((context) => HomePage(
-                                steps_: "!",
-                                sleep_: "!",
-                                water_: "!",
-                                weight_: 0))));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: ((context) => HomePage())));
                   }
                 }),
           ],

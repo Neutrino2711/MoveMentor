@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:status_code0/models/google_signin.dart';
 import 'package:status_code0/models/networking.dart';
 import 'package:status_code0/models/pedometer.dart';
 import 'package:status_code0/screens/news.dart';
@@ -9,6 +10,9 @@ import 'package:status_code0/screens/profile.dart';
 import 'package:status_code0/models/api_integrate.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:status_code0/screens/rewards.dart';
+import 'package:provider/provider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:status_code0/screens/signin_screen.dart';
 
 final _firestore = FirebaseFirestore.instance;
 
@@ -16,17 +20,9 @@ const url =
     'https://newsapi.org/v2/top-headlines?country=in&category=health&apiKey=7ed5969f1fff48ea8d72286502cd2a33';
 
 class HomePage extends StatefulWidget {
-  HomePage(
-      {super.key,
-      required this.sleep_,
-      required this.steps_,
-      required this.water_,
-      required this.weight_});
-
-  final String steps_;
-  final int weight_;
-  final String sleep_;
-  final String water_;
+  HomePage({
+    super.key,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -40,16 +36,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    activePage = OverViewScreen(
-        steps: widget.steps_,
-        sleep: widget.sleep_,
-        water: widget.water_,
-        weight: widget.weight_);
+    activePage = OverViewScreen(steps: "0", sleep: "0", water: "0", weight: 0);
     // ApiIntegrate _apiIntegrate =
     //     ApiIntegrate(Sleep: widget.sleep_, Steps: widget.steps_);
     // _apiIntegrate.api_inte();
-    response =
-        '''Steps walked : ${widget.steps_} stept:${widget.sleep_}hrs what changes to make to improve health in single line .''';
+    // response =
+    // '''Steps walked : ${widget.steps_} stept:${widget.sleep_}hrs what changes to make to improve health in single line .''';
     // TODO: implement initState
     super.initState();
   }
